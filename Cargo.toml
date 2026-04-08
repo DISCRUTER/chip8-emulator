@@ -1,6 +1,6 @@
 [workspace]
 
 members = [
-    "chip8-core",
+    "chip8_core",
     "desktop",
 ]
