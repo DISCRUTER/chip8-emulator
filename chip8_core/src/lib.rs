@@ -284,8 +284,8 @@ impl Emu {
             // Display - DXYN
             (0xD, _, _, _) => {
                 // get x & y coords
-                let x_coord = digit2 as usize;
-                let y_coord = digit3 as usize;
+                let x_coord = self.v_reg[digit2 as usize] as usize;
+                let y_coord = self.v_reg[digit3 as usize] as usize;
                 // Height of sprite
                 let num_rows = digit4;
                 // Keep track if the pixel flipped
@@ -379,22 +379,18 @@ impl Emu {
             // Binary Encoded Decimal - FX33
             (0xF, _, 3, 3) => {
                 let x = digit2 as usize;
-                let vx = self.v_reg[x] as f32;
+                let vx = self.v_reg[x];
 
-                let hundereth = (vx / 100.0).floor() as u8;
-                let tenth = ((vx / 10.0) % 10.0).floor() as u8;
-                let ones = (vx % 10.0) as u8;
-
-                self.ram[self.i_reg as usize] = hundereth;
-                self.ram[(self.i_reg + 1) as  usize] = tenth;
-                self.ram[(self.i_reg + 2) as usize] = ones;
+                self.ram[self.i_reg as usize] = vx / 100;
+                self.ram[(self.i_reg + 1) as usize] = (vx / 10) % 10;
+                self.ram[(self.i_reg + 2) as usize] = vx % 10;
             },
             // Store in RAM - FX55
             (0xF, _, 5, 5) => {
                 let x = digit2 as usize;
                 let i = self.i_reg as usize;
                 for idx in 0..=x {
-                    self.v_reg[i + idx] = self.ram[idx];
+                    self.ram[i + idx] = self.v_reg[idx];
                 }
             },
             // Fetch from RAM to VX - FX65
