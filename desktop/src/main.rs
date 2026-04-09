@@ -12,6 +12,8 @@ use std::io::Read;
 use std::sync::Arc;
 
 
+const TICK_PER_FRAME: usize = 10;
+
 #[derive(Default)]
 struct App {
     window: Option<Arc<Window>>,
@@ -45,8 +47,13 @@ impl ApplicationHandler for App {
             WindowEvent::CloseRequested => event_loop.exit(),
             WindowEvent::RedrawRequested => {
                 let emu = self.emu.as_mut().unwrap();
-                emu.tick();
 
+                for _ in 0..TICK_PER_FRAME {
+                    emu.tick();
+                }
+
+                emu.timer_tick();
+                
                 let pixels = self.pixels.as_mut().unwrap();
                 draw(emu, pixels.frame_mut());
 
