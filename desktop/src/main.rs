@@ -9,24 +9,25 @@ use chip8_core::*;
 use std::env;
 use std::fs::File;
 use std::io::Read;
+use std::sync::Arc;
 
 
 #[derive(Default)]
 struct App {
-    window: Option<Window>,
-    pixels: Option<Pixels>,
+    window: Option<Arc<Window>>,
+    pixels: Option<Pixels<'static>>,
     emu: Option<Emu>,
 }
 
 impl ApplicationHandler for App {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         if self.window.is_none() {
-            let window = event_loop.create_window(Window::default_attributes()
-                .with_title("Chip8 Emulator")).unwrap();
+            let window = Arc::new(event_loop.create_window(Window::default_attributes()
+                .with_title("Chip8 Emulator")).unwrap());
 
             // Create a pixel buffer
             let window_size = window.inner_size();
-            let surface_texture = SurfaceTexture::new(window_size.width, window_size.height, &window);
+            let surface_texture = SurfaceTexture::new(window_size.width, window_size.height, Arc::clone(&window));
             let pixels = Pixels::new(SCREEN_WIDTH as u32, SCREEN_HEIGHT as u32, surface_texture).unwrap();
 
             self.window = Some(window);
@@ -37,7 +38,7 @@ impl ApplicationHandler for App {
     fn window_event(
             &mut self,
             event_loop: &ActiveEventLoop,
-            window_id: WindowId,
+            _window_id: WindowId,
             event: WindowEvent,
         ) {
         match event {
@@ -53,6 +54,8 @@ impl ApplicationHandler for App {
                     println!("Render error: {}", err);
                     event_loop.exit();
                 }
+
+                self.window.as_ref().unwrap().request_redraw();
             }
             _ => (),
         }
@@ -91,5 +94,5 @@ fn main() {
         pixels: None,
         emu: Some(chip8)
     };
-    event_loop.run_app(&mut app);
+    _ = event_loop.run_app(&mut app);
 }
