@@ -1,5 +1,0 @@
-/home/disruter/code/chip8_emulator/target/debug/deps/document_features-29c722fcdd0c3b31.d: /home/disruter/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/document-features-0.2.12/lib.rs
-
-/home/disruter/code/chip8_emulator/target/debug/deps/libdocument_features-29c722fcdd0c3b31.so: /home/disruter/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/document-features-0.2.12/lib.rs
-
-/home/disruter/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/document-features-0.2.12/lib.rs:
